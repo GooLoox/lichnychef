@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Личный кабинет — Личный Шеф</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F9F5EF;--white:#fff;--rust:#B84A1A;--rust2:#D96030;
+  --green:#2A5C2E;--ink:#18100A;--muted:#7A5E42;
+  --border:rgba(150,110,60,0.14);--gold:#C4920A;
+}
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);min-height:100vh}
+
+nav{
+  background:rgba(249,245,239,0.96);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:10;
+}
+.logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+.logo-circle{width:34px;height:34px;border:1.5px solid var(--rust);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.logo-circle svg{width:16px;height:16px;stroke:var(--rust);stroke-width:1.5;fill:none;stroke-linecap:round}
+.logo-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--ink)}
+.logo-sub{font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--rust)}
+.btn-back{color:var(--muted);font-size:.8rem;text-decoration:none;display:flex;align-items:center;gap:.3rem;transition:color .2s}
+.btn-back:hover{color:var(--ink)}
+
+/* LOGIN STATE */
+.login-screen{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:calc(100vh - 70px);padding:2rem;text-align:center;
+}
+.login-icon{font-size:3.5rem;margin-bottom:1.5rem}
+.login-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--ink);margin-bottom:.8rem}
+.login-desc{color:var(--muted);font-size:.92rem;line-height:1.7;max-width:400px;margin-bottom:2rem;font-weight:300}
+
+/* PROFILE STATE */
+.profile-wrap{display:none;max-width:1000px;margin:0 auto;padding:2.5rem 2rem}
+.profile-header{
+  display:flex;align-items:center;gap:1.5rem;
+  background:var(--white);border:1px solid var(--border);
+  padding:2rem;margin-bottom:1.5rem;
+}
+.profile-avatar{
+  width:70px;height:70px;border-radius:50%;
+  overflow:hidden;border:2px solid var(--rust);flex-shrink:0;
+}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-avatar-placeholder{
+  width:70px;height:70px;border-radius:50%;
+  background:linear-gradient(135deg,var(--rust),var(--rust2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;font-weight:700;color:#fff;flex-shrink:0;
+  border:2px solid var(--rust);
+}
+.profile-name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--ink)}
+.profile-username{font-size:.8rem;color:var(--muted);margin-top:.2rem}
+.plan-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.3rem .8rem;font-size:.68rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;margin-top:.5rem;
+}
+.plan-free{background:rgba(0,0,0,0.05);color:var(--muted)}
+.plan-pro{background:rgba(196,146,10,0.12);color:var(--gold)}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--white);border:1px solid var(--border);padding:1.5rem;text-align:center}
+.stat-n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--rust);line-height:1}
+.stat-l{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.tab{
+  padding:.75rem 1.5rem;font-size:.8rem;font-weight:500;
+  color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;
+  transition:color .2s,border-color .2s;letter-spacing:.04em;
+  background:none;border-left:none;border-right:none;border-top:none;
+  font-family:'Inter',sans-serif;
+}
+.tab.active{color:var(--rust);border-bottom-color:var(--rust)}
+.tab:hover{color:var(--ink)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* HISTORY */
+.history-item{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--white);border:1px solid var(--border);
+  padding:1rem 1.3rem;margin-bottom:.5rem;
+  transition:border-color .2s;
+}
+.history-item:hover{border-color:rgba(184,74,26,0.25)}
+.hi-emoji{font-size:1.3rem;margin-right:.8rem;flex-shrink:0}
+.hi-name{font-weight:500;font-size:.88rem;color:var(--ink)}
+.hi-date{font-size:.72rem;color:var(--muted);margin-top:.15rem}
+.hi-btn{
+  background:none;border:1px solid var(--border);
+  padding:.35rem .8rem;font-size:.72rem;color:var(--muted);
+  cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all .2s;
+}
+.hi-btn:hover{border-color:var(--rust);color:var(--rust)}
+.empty-state{text-align:center;padding:3rem;color:var(--muted);font-size:.88rem}
+
+/* HOME PRODUCTS */
+.product-tag{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:var(--bg);border:1px solid var(--border);
+  padding:.35rem .8rem;margin:.3rem;font-size:.8rem;color:var(--ink2);
+}
+.product-tag button{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:.8rem;padding:0;line-height:1;
+  transition:color .2s;
+}
+.product-tag button:hover{color:var(--rust)}
+
+/* PLAN SECTION */
+.plan-card{
+  background:var(--white);border:1px solid var(--border);
+  padding:2rem;margin-bottom:1rem;
+}
+.plan-card.current{border-color:var(--rust)}
+.plan-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:.3rem}
+.plan-price{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--rust)}
+.plan-features{list-style:none;margin:.8rem 0 1.2rem}
+.plan-features li{font-size:.83rem;color:var(--muted);padding:.25rem 0;display:flex;gap:.5rem}
+.plan-features li svg{width:14px;height:14px;stroke:var(--rust);stroke-width:2;fill:none;stroke-linecap:round;flex-shrink:0;margin-top:2px}
+.btn-upgrade{
+  display:block;text-align:center;background:var(--rust);color:#fff;
+  padding:.75rem;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  text-decoration:none;transition:background .2s;
+}
+.btn-upgrade:hover{background:var(--rust2)}
+
+/* PROGRESS BAR */
+.progress-wrap{background:rgba(0,0,0,0.06);height:4px;margin:.5rem 0}
+.progress-bar{height:100%;background:var(--rust);transition:width .5s ease}
+
+@media(max-width:768px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  nav{padding:.9rem 1.2rem}
+  .profile-wrap{padding:1rem}
+  .tabs{overflow-x:auto;scrollbar-width:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-circle">
+      <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+    </div>
+    <div>
+      <div class="logo-name">Личный Шеф</div>
+      <div class="logo-sub">AI · Кулинария · Покупки</div>
+    </div>
+  </a>
+  <a href="index.html" class="btn-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    На главную
+  </a>
+</nav>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-icon">👨‍🍳</div>
+  <div class="login-title">Личный кабинет</div>
+  <div class="login-desc">Войдите через Telegram чтобы увидеть историю покупок, статистику и управлять подпиской.</div>
+
+  <!-- Telegram Login Widget -->
+  <script async src="https://telegram.org/js/telegram-widget.js?22"
+    data-telegram-login="YOUR_BOT_USERNAME"
+    data-size="large"
+    data-radius="0"
+    data-onauth="onTelegramAuth(user)"
+    data-request-access="write">
+  </script>
+
+  <p style="font-size:.72rem;color:var(--muted);margin-top:1.5rem;max-width:320px;line-height:1.6">
+    Мы не храним пароли. Авторизация через официальный виджет Telegram.
+  </p>
+</div>
+
+<!-- PROFILE SCREEN -->
+<div class="profile-wrap" id="profile-screen">
+
+  <!-- Header -->
+  <div class="profile-header">
+    <div id="profile-av"></div>
+    <div style="flex:1">
+      <div class="profile-name" id="profile-name">—</div>
+      <div class="profile-username" id="profile-username">—</div>
+      <div class="plan-badge plan-free" id="plan-badge">Бесплатный план</div>
+    </div>
+    <button onclick="logout()"
+      style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.75rem;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s"
+      onmouseover="this.style.borderColor='var(--rust)';this.style.color='var(--rust)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+      Выйти
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-n" id="stat-lists">0</div>
+      <div class="stat-l">Списков составлено</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-n" id="stat-today">0</div>
+      <div class="stat-l">Запросов сегодня</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-n" id="stat-recipes">0</div>
+      <div class="stat-l">Рецептов попробовано</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-n" id="stat-saved">~0₽</div>
+      <div class="stat-l">Сэкономлено</div>
+    </div>
+  </div>
+
+  <!-- Лимит запросов -->
+  <div id="limit-bar" style="background:var(--white);border:1px solid var(--border);padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:none">
+    <div style="display:flex;justify-content:space-between;margin-bottom:.5rem">
+      <span style="font-size:.75rem;font-weight:500;color:var(--ink)">Запросов сегодня</span>
+      <span style="font-size:.75rem;color:var(--muted)" id="limit-text">0 / 5</span>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar" id="limit-progress" style="width:0%"></div></div>
+    <div style="font-size:.7rem;color:var(--muted);margin-top:.4rem">Обновляется каждый день в 00:00</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('history')">📋 История</button>
+    <button class="tab" onclick="switchTab('home')">🏠 Что дома</button>
+    <button class="tab" onclick="switchTab('plan')">💳 Подписка</button>
+  </div>
+
+  <!-- Tab: История -->
+  <div class="tab-content active" id="tab-history">
+    <div id="history-list">
+      <div class="empty-state">
+        <div style="font-size:2rem;margin-bottom:.8rem">📋</div>
+        История загружается...
+      </div>
+    </div>
+    <button onclick="clearHistory()"
+      style="margin-top:1rem;background:none;border:1px solid var(--border);padding:.6rem 1.2rem;font-size:.75rem;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s"
+      onmouseover="this.style.borderColor='var(--rust)';this.style.color='var(--rust)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+      🗑 Очистить историю
+    </button>
+  </div>
+
+  <!-- Tab: Что дома -->
+  <div class="tab-content" id="tab-home">
+    <div style="background:var(--white);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem">
+      <div style="font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Продукты дома</div>
+      <div id="home-products" style="margin-bottom:1rem">
+        <div class="empty-state" style="padding:1.5rem">Нет данных</div>
+      </div>
+      <div style="display:flex;gap:.5rem">
+        <input id="new-product" type="text" placeholder="Добавить продукт..."
+          style="flex:1;background:var(--bg);border:1px solid var(--border);padding:.6rem .9rem;font-family:'Inter',sans-serif;font-size:.82rem;outline:none;transition:border-color .2s"
+          onfocus="this.style.borderColor='var(--rust)'" onblur="this.style.borderColor='var(--border)'"
+          onkeydown="if(event.key==='Enter')addProduct()">
+        <button onclick="addProduct()"
+          style="background:var(--rust);color:#fff;border:none;padding:.6rem 1.2rem;font-size:.78rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:background .2s"
+          onmouseover="this.style.background='#D96030'" onmouseout="this.style.background='var(--rust)'">
+          Добавить
+        </button>
+      </div>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);line-height:1.6">
+      Продукты дома учитываются ботом при составлении списка покупок — он не включает их в список.
+    </p>
+  </div>
+
+  <!-- Tab: Подписка -->
+  <div class="tab-content" id="tab-plan">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div class="plan-card" id="free-plan">
+        <div class="plan-title">Бесплатный</div>
+        <div class="plan-price">0₽</div>
+        <ul class="plan-features">
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>5 запросов в день</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Все рецепты</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Список по отделам</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Калории и КБЖУ</li>
+        </ul>
+      </div>
+      <div class="plan-card current" id="pro-plan">
+        <div style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:var(--rust);color:#fff;padding:.2rem .6rem;display:inline-block;margin-bottom:.5rem">Рекомендуем</div>
+        <div class="plan-title">Pro</div>
+        <div class="plan-price">299₽<span style="font-size:.8rem;font-weight:400;color:var(--muted)">/мес</span></div>
+        <ul class="plan-features">
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Безлимитные запросы</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Акции в 5 магазинах</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Умные замены</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>История покупок</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Личный кабинет</li>
+        </ul>
+        <a href="https://t.me/YOUR_ADMIN" class="btn-upgrade" target="_blank" id="upgrade-btn">
+          Перейти на Pro →
+        </a>
+      </div>
+    </div>
+    <p style="font-size:.75rem;color:var(--muted);margin-top:1rem;line-height:1.6">
+      После оплаты напишите в Telegram боту — Pro активируется в течение нескольких минут.
+    </p>
+  </div>
+
+</div>
+
+<script>
+// ── Данные пользователя (localStorage как заглушка до бэкенда) ──
+let currentUser = null;
+
+function onTelegramAuth(user) {
+  currentUser = user;
+  localStorage.setItem('tg_user', JSON.stringify(user));
+  showProfile(user);
+}
+
+function showProfile(user) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('profile-screen').style.display = 'block';
+
+  // Аватарка
+  const avEl = document.getElementById('profile-av');
+  if (user.photo_url) {
+    avEl.innerHTML = `<img src="${user.photo_url}" class="profile-avatar" alt="">`;
+  } else {
+    const initials = (user.first_name[0] + (user.last_name?.[0] || '')).toUpperCase();
+    avEl.innerHTML = `<div class="profile-avatar-placeholder">${initials}</div>`;
+  }
+
+  document.getElementById('profile-name').textContent =
+    user.first_name + (user.last_name ? ' ' + user.last_name : '');
+  document.getElementById('profile-username').textContent =
+    user.username ? '@' + user.username : 'ID: ' + user.id;
+
+  loadProfileData(user.id);
+}
+
+function loadProfileData(userId) {
+  // Загружаем данные из localStorage (заглушка — потом заменить на API)
+  const key = 'chef_data_' + userId;
+  const data = JSON.parse(localStorage.getItem(key) || '{}');
+
+  const isPro = data.is_pro || false;
+  const usedToday = data.requests_today || 0;
+  const history = data.shopping_history || [];
+  const atHome = data.at_home || [];
+  const totalRecipes = data.total_recipes || 0;
+  const totalSaved = data.total_saved || 0;
+
+  // План
+  const badge = document.getElementById('plan-badge');
+  if (isPro) {
+    badge.textContent = '🚀 Pro план';
+    badge.className = 'plan-badge plan-pro';
+    document.getElementById('upgrade-btn').textContent = '✅ Pro активен';
+    document.getElementById('upgrade-btn').style.background = '#2A5C2E';
+  }
+
+  // Лимит
+  if (!isPro) {
+    document.getElementById('limit-bar').style.display = 'block';
+    document.getElementById('limit-text').textContent = `${usedToday} / 5`;
+    document.getElementById('limit-progress').style.width = (usedToday / 5 * 100) + '%';
+  }
+
+  // Статистика
+  document.getElementById('stat-lists').textContent = history.length;
+  document.getElementById('stat-today').textContent = usedToday;
+  document.getElementById('stat-recipes').textContent = totalRecipes;
+  document.getElementById('stat-saved').textContent = '~' + totalSaved + '₽';
+
+  // История
+  renderHistory(history);
+
+  // Что дома
+  renderHomeProducts(atHome);
+}
+
+function renderHistory(history) {
+  const el = document.getElementById('history-list');
+  if (!history.length) {
+    el.innerHTML = '<div class="empty-state"><div style="font-size:2rem;margin-bottom:.8rem">📋</div>История пуста. Составь первый список в боте!</div>';
+    return;
+  }
+  el.innerHTML = history.map((h, i) => `
+    <div class="history-item">
+      <div style="display:flex;align-items:center">
+        <span class="hi-emoji">🍲</span>
+        <div>
+          <div class="hi-name">${h.recipe}</div>
+          <div class="hi-date">${h.date}</div>
+        </div>
+      </div>
+      <button class="hi-btn" onclick="repeatRecipe('${h.recipe}')">Повторить</button>
+    </div>
+  `).join('');
+}
+
+function renderHomeProducts(products) {
+  const el = document.getElementById('home-products');
+  if (!products.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:.83rem">Список пуст</div>';
+    return;
+  }
+  el.innerHTML = products.map((p, i) => `
+    <span class="product-tag">${p}<button onclick="removeProduct(${i})">✕</button></span>
+  `).join('');
+}
+
+function addProduct() {
+  const input = document.getElementById('new-product');
+  const val = input.value.trim();
+  if (!val || !currentUser) return;
+  const key = 'chef_data_' + currentUser.id;
+  const data = JSON.parse(localStorage.getItem(key) || '{}');
+  if (!data.at_home) data.at_home = [];
+  data.at_home.push(val);
+  localStorage.setItem(key, JSON.stringify(data));
+  input.value = '';
+  renderHomeProducts(data.at_home);
+}
+
+function removeProduct(idx) {
+  if (!currentUser) return;
+  const key = 'chef_data_' + currentUser.id;
+  const data = JSON.parse(localStorage.getItem(key) || '{}');
+  data.at_home.splice(idx, 1);
+  localStorage.setItem(key, JSON.stringify(data));
+  renderHomeProducts(data.at_home);
+}
+
+function clearHistory() {
+  if (!currentUser || !confirm('Очистить всю историю?')) return;
+  const key = 'chef_data_' + currentUser.id;
+  const data = JSON.parse(localStorage.getItem(key) || '{}');
+  data.shopping_history = [];
+  localStorage.setItem(key, JSON.stringify(data));
+  renderHistory([]);
+  document.getElementById('stat-lists').textContent = '0';
+}
+
+function repeatRecipe(name) {
+  window.open(`https://t.me/YOUR_BOT_USERNAME?start=repeat_${encodeURIComponent(name)}`, '_blank');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function logout() {
+  localStorage.removeItem('tg_user');
+  currentUser = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('profile-screen').style.display = 'none';
+}
+
+// Проверяем сохранённую сессию
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('tg_user');
+  if (saved) {
+    try {
+      const user = JSON.parse(saved);
+      currentUser = user;
+      showProfile(user);
+    } catch(e) {
+      localStorage.removeItem('tg_user');
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -3,7 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Личный Шеф — AI помощник на кухне</title>
+
+<!-- ══ SEO ══ -->
+<title>Личный Шеф — AI помощник по кулинарии и покупкам</title>
+<meta name="description" content="Telegram-бот Личный Шеф составляет список покупок по рецепту, считает калории, находит акции в Магните и Пятёрочке. 178 рецептов. Бесплатно.">
+<meta name="keywords" content="список покупок, рецепты, калории, КБЖУ, акции магазин, телеграм бот, кулинария, борщ, карбонара, плов">
+<meta name="author" content="Личный Шеф">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://GooLoox.github.io/lichnychef/">
+
+<!-- ══ Open Graph (превью при шеринге в соцсетях) ══ -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Личный Шеф — AI помощник по кулинарии">
+<meta property="og:description" content="Напишите что хотите приготовить — получите список покупок с граммовками, калориями и акциями в магазинах за 10 секунд.">
+<meta property="og:url" content="https://GooLoox.github.io/lichnychef/">
+<meta property="og:image" content="https://GooLoox.github.io/lichnychef/og-image.jpg">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Личный Шеф">
+
+<!-- ══ Twitter Card ══ -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Личный Шеф — AI помощник по кулинарии">
+<meta name="twitter:description" content="Список покупок по рецепту за 10 секунд. 178 рецептов, калории, акции в магазинах.">
+<meta name="twitter:image" content="https://GooLoox.github.io/lichnychef/og-image.jpg">
+
+<!-- ══ Telegram ══ -->
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- ══ Favicon ══ -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍳</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍳</text></svg>">
+
+<!-- ══ Schema.org разметка для Google ══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Личный Шеф",
+  "description": "AI Telegram-бот для составления списков покупок по рецептам с подсчётом калорий и поиском акций в магазинах",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Telegram",
+  "offers": [
+    {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "RUB",
+      "name": "Бесплатный план"
+    },
+    {
+      "@type": "Offer",
+      "price": "299",
+      "priceCurrency": "RUB",
+      "name": "Pro план",
+      "billingPeriod": "P1M"
+    }
+  ],
+  "featureList": [
+    "Составление списка покупок по рецепту",
+    "Подсчёт калорий и КБЖУ",
+    "Поиск акций в Магните и Пятёрочке",
+    "178 рецептов в базе",
+    "Голосовой ввод"
+  ],
+  "inLanguage": "ru",
+  "url": "https://GooLoox.github.io/lichnychef/"
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -539,7 +605,7 @@ footer{
     <a href="#calories">Калории</a>
     <a href="#pricing">Цены</a>
   </div>
-  <a href="https://t.me/YOUR_BOT" class="btn-nav" target="_blank">
+  <a href="https://t.me/YOUR_BOT_USERNAME" class="btn-nav" target="_blank">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.47c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.873.75z"/></svg>
     Открыть бота
   </a>
@@ -1293,6 +1359,333 @@ document.getElementById('site-input').addEventListener('input', function() {
         <a href="https://t.me/YOUR_BOT" class="pb wh" target="_blank">7 дней бесплатно →</a>
       </div>
     </div>
+  </div>
+</section>
+
+
+
+<!-- КАЛЬКУЛЯТОР БЮДЖЕТА -->
+<section id="calculator" style="background:var(--white);padding:8rem 4rem">
+  <div class="s">
+    <div class="s-tag"><div class="s-tag-line"></div><div class="s-tag-text">Калькулятор</div></div>
+    <div class="s-title">Сколько блюд на<br><em>ваш бюджет?</em></div>
+    <p class="s-sub">Введите бюджет на неделю — покажем сколько блюд можно приготовить и примерное меню.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:4rem">
+
+      <!-- Левая часть — форма -->
+      <div>
+        <!-- Слайдер бюджета -->
+        <div style="margin-bottom:2.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.8rem">
+            <label style="font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">Бюджет на неделю</label>
+            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--rust)" id="budget-display">3 000 ₽</div>
+          </div>
+          <input type="range" id="budget-slider" min="500" max="10000" step="500" value="3000"
+            style="width:100%;height:4px;accent-color:#B84A1A;cursor:pointer">
+          <div style="display:flex;justify-content:space-between;margin-top:.4rem">
+            <span style="font-size:.7rem;color:var(--muted)">500 ₽</span>
+            <span style="font-size:.7rem;color:var(--muted)">10 000 ₽</span>
+          </div>
+        </div>
+
+        <!-- Количество человек -->
+        <div style="margin-bottom:2.5rem">
+          <label style="font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.8rem">Количество человек</label>
+          <div style="display:flex;gap:.5rem" id="person-btns">
+            <button class="person-btn active" data-n="1" onclick="calc.setPeople(1)">1</button>
+            <button class="person-btn" data-n="2" onclick="calc.setPeople(2)">2</button>
+            <button class="person-btn" data-n="3" onclick="calc.setPeople(3)">3</button>
+            <button class="person-btn" data-n="4" onclick="calc.setPeople(4)">4</button>
+            <button class="person-btn" data-n="5" onclick="calc.setPeople(5)">5+</button>
+          </div>
+        </div>
+
+        <!-- Предпочтения -->
+        <div style="margin-bottom:2.5rem">
+          <label style="font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.8rem">Предпочтения</label>
+          <div style="display:flex;flex-wrap:wrap;gap:.5rem" id="pref-btns">
+            <button class="pref-btn active" data-p="мясо" onclick="calc.togglePref(this)">🥩 Мясо</button>
+            <button class="pref-btn active" data-p="рыба" onclick="calc.togglePref(this)">🐟 Рыба</button>
+            <button class="pref-btn active" data-p="паста" onclick="calc.togglePref(this)">🍝 Паста</button>
+            <button class="pref-btn" data-p="вегет" onclick="calc.togglePref(this)">🥦 Вегетарианское</button>
+            <button class="pref-btn active" data-p="супы" onclick="calc.togglePref(this)">🍲 Супы</button>
+          </div>
+        </div>
+
+        <!-- Кнопка рассчитать -->
+        <button onclick="calc.calculate()"
+          style="width:100%;background:var(--rust);color:#fff;border:none;padding:1rem;font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .2s"
+          onmouseover="this.style.background='#D96030'" onmouseout="this.style.background='var(--rust)'">
+          Рассчитать меню
+        </button>
+      </div>
+
+      <!-- Правая часть — результат -->
+      <div id="calc-result" style="background:var(--bg);border:1px solid var(--border);padding:2rem;min-height:300px">
+        <div style="text-align:center;padding:3rem 1rem;color:var(--muted)">
+          <div style="font-size:2.5rem;margin-bottom:1rem">🧮</div>
+          <div style="font-size:.88rem;line-height:1.7">Введите бюджет и нажмите<br>"Рассчитать меню"</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+.person-btn{
+  width:44px;height:44px;
+  background:var(--bg);border:1.5px solid var(--border);
+  font-size:.88rem;font-weight:500;color:var(--muted);
+  cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all .2s;
+}
+.person-btn.active,.person-btn:hover{
+  background:var(--rust);border-color:var(--rust);color:#fff;
+}
+.pref-btn{
+  background:var(--bg);border:1px solid var(--border);
+  padding:.4rem .9rem;font-size:.78rem;font-weight:500;color:var(--muted);
+  cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all .2s;
+}
+.pref-btn.active{
+  background:rgba(184,74,26,0.08);border-color:rgba(184,74,26,0.3);color:var(--rust);
+}
+.menu-dish{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 0;border-bottom:1px solid var(--border);
+  font-size:.83rem;
+}
+.menu-dish:last-child{border-bottom:none}
+.dish-name{color:var(--ink);font-weight:500}
+.dish-cost{color:var(--muted);font-size:.75rem}
+.dish-cal{
+  font-size:.68rem;padding:.15rem .5rem;
+  background:rgba(184,74,26,0.08);color:var(--rust);
+}
+</style>
+
+<script>
+const calc = {
+  people: 1,
+  budget: 3000,
+  prefs: new Set(['мясо','рыба','паста','супы']),
+
+  dishes: [
+    {name:'Борщ',cat:'супы',cost_per:180,cal:285,emoji:'🍲'},
+    {name:'Щи',cat:'супы',cost_per:150,cal:220,emoji:'🥬'},
+    {name:'Куриный суп',cat:'супы',cost_per:130,cal:180,emoji:'🍜'},
+    {name:'Гороховый суп',cat:'супы',cost_per:120,cal:250,emoji:'🫛'},
+    {name:'Котлеты с пюре',cat:'мясо',cost_per:220,cal:380,emoji:'🍖'},
+    {name:'Куриные бёдра',cat:'мясо',cost_per:180,cal:320,emoji:'🍗'},
+    {name:'Гуляш с гречкой',cat:'мясо',cost_per:200,cal:350,emoji:'🥩'},
+    {name:'Тефтели в соусе',cat:'мясо',cost_per:190,cal:310,emoji:'🍖'},
+    {name:'Паста карбонара',cat:'паста',cost_per:160,cal:420,emoji:'🍝'},
+    {name:'Паста болоньезе',cat:'паста',cost_per:170,cal:390,emoji:'🍝'},
+    {name:'Ризотто с грибами',cat:'паста',cost_per:190,cal:360,emoji:'🍚'},
+    {name:'Треска в томате',cat:'рыба',cost_per:200,cal:220,emoji:'🐟'},
+    {name:'Скумбрия запечённая',cat:'рыба',cost_per:160,cal:280,emoji:'🐠'},
+    {name:'Рыбные котлеты',cat:'рыба',cost_per:180,cal:260,emoji:'🐟'},
+    {name:'Овощной вок',cat:'вегет',cost_per:140,cal:220,emoji:'🥦'},
+    {name:'Фалафель',cat:'вегет',cost_per:130,cal:300,emoji:'🧆'},
+    {name:'Карри из нута',cat:'вегет',cost_per:150,cal:280,emoji:'🫘'},
+    {name:'Плов',cat:'мясо',cost_per:250,cal:420,emoji:'🍚'},
+    {name:'Куриное карри',cat:'мясо',cost_per:210,cal:340,emoji:'🍗'},
+    {name:'Лазанья',cat:'паста',cost_per:230,cal:450,emoji:'🍝'},
+  ],
+
+  setPeople(n) {
+    this.people = n;
+    document.querySelectorAll('.person-btn').forEach(b => {
+      b.classList.toggle('active', parseInt(b.dataset.n) === n);
+    });
+  },
+
+  togglePref(btn) {
+    const p = btn.dataset.p;
+    if (this.prefs.has(p)) {
+      if (this.prefs.size > 1) { this.prefs.delete(p); btn.classList.remove('active'); }
+    } else {
+      this.prefs.add(p); btn.classList.add('active');
+    }
+  },
+
+  calculate() {
+    const budget = parseInt(document.getElementById('budget-slider').value);
+    const perPerson = budget / this.people;
+
+    // Фильтруем блюда по предпочтениям
+    const available = this.dishes.filter(d => this.prefs.has(d.cat));
+
+    // Подбираем меню на неделю (7 обедов + 7 ужинов = 14 блюд)
+    const menu = [];
+    let spent = 0;
+    const shuffled = [...available].sort(() => Math.random() - 0.5);
+
+    for (const dish of shuffled) {
+      const totalCost = dish.cost_per * this.people;
+      if (spent + totalCost <= budget && menu.length < 10) {
+        menu.push({...dish, total: totalCost});
+        spent += totalCost;
+      }
+    }
+
+    const saved = budget - spent;
+    const avgCal = Math.round(menu.reduce((s,d) => s + d.cal, 0) / menu.length);
+
+    const result = document.getElementById('calc-result');
+    result.innerHTML = \`
+      <div style="margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">
+        <div style="font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--rust);margin-bottom:.3rem">Меню на неделю</div>
+        <div style="display:flex;gap:1.5rem">
+          <div>
+            <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--ink)">\${menu.length}</div>
+            <div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">блюд</div>
+          </div>
+          <div>
+            <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--rust)">\${spent.toLocaleString()}₽</div>
+            <div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">потратите</div>
+          </div>
+          <div>
+            <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#2A5C2E">\${saved.toLocaleString()}₽</div>
+            <div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">остаток</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        \${menu.map(d => \`
+          <div class="menu-dish">
+            <div class="dish-name">\${d.emoji} \${d.name}</div>
+            <div style="display:flex;align-items:center;gap:.6rem">
+              <span class="dish-cal">~\${d.cal} ккал</span>
+              <span class="dish-cost">\${d.total}₽</span>
+            </div>
+          </div>
+        \`).join('')}
+      </div>
+      <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--muted)">
+        Средняя калорийность: ~\${avgCal} ккал/порцию
+      </div>
+      <a href="https://t.me/YOUR_BOT" target="_blank"
+        style="display:block;text-align:center;background:var(--rust);color:#fff;padding:.75rem;margin-top:1rem;text-decoration:none;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;transition:background .2s"
+        onmouseover="this.style.background='#D96030'" onmouseout="this.style.background='var(--rust)'">
+        Составить списки покупок в Telegram →
+      </a>
+    \`;
+  }
+};
+
+// Слайдер
+document.getElementById('budget-slider').addEventListener('input', function() {
+  calc.budget = parseInt(this.value);
+  document.getElementById('budget-display').textContent =
+    parseInt(this.value).toLocaleString('ru') + ' ₽';
+});
+</script>
+
+<!-- ОТЗЫВЫ -->
+<section id="reviews" style="background:var(--bg2);padding:8rem 4rem">
+  <div class="s">
+    <div class="s-tag"><div class="s-tag-line"></div><div class="s-tag-text">Отзывы</div></div>
+    <div class="s-title">Что говорят<br><em>пользователи</em></div>
+    <p class="s-sub">Реальные отзывы людей которые уже готовят с Личным Шефом каждый день.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem">
+
+      <div style="background:var(--white);border:1px solid var(--border);padding:2rem;position:relative">
+        <!-- Кавычка декоративная -->
+        <div style="font-family:'Playfair Display',serif;font-size:4rem;color:rgba(184,74,26,0.12);line-height:1;position:absolute;top:1rem;right:1.5rem">"</div>
+        <!-- Звёзды -->
+        <div style="display:flex;gap:3px;margin-bottom:1rem">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p style="font-size:.88rem;color:var(--muted);line-height:1.75;font-weight:300;margin-bottom:1.5rem">
+          Раньше каждый поход в магазин был хаосом — забывал половину, покупал лишнее. Теперь пишу боту что готовлю, он выдаёт список по отделам. Экономлю минимум час в неделю.
+        </p>
+        <div style="display:flex;align-items:center;gap:.8rem;padding-top:1.2rem;border-top:1px solid var(--border)">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#B84A1A,#D96030);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0">АМ</div>
+          <div>
+            <div style="font-weight:600;font-size:.88rem;color:var(--ink)">Александр М.</div>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:1px">Москва · пользуется 2 месяца</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--border);padding:2rem;position:relative">
+        <div style="font-family:'Playfair Display',serif;font-size:4rem;color:rgba(184,74,26,0.12);line-height:1;position:absolute;top:1rem;right:1.5rem">"</div>
+        <div style="display:flex;gap:3px;margin-bottom:1rem">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p style="font-size:.88rem;color:var(--muted);line-height:1.75;font-weight:300;margin-bottom:1.5rem">
+          Слежу за питанием и КБЖУ — это просто находка. Пишу рецепт, сразу вижу калории на порцию. Бот предложил заменить сметану на греческий йогурт — сэкономила 80 ккал в борще!
+        </p>
+        <div style="display:flex;align-items:center;gap:.8rem;padding-top:1.2rem;border-top:1px solid var(--border)">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#2A5C2E,#4A8C4D);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0">ЕК</div>
+          <div>
+            <div style="font-weight:600;font-size:.88rem;color:var(--ink)">Екатерина К.</div>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:1px">Санкт-Петербург · на диете 3 недели</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--border);padding:2rem;position:relative">
+        <div style="font-family:'Playfair Display',serif;font-size:4rem;color:rgba(184,74,26,0.12);line-height:1;position:absolute;top:1rem;right:1.5rem">"</div>
+        <div style="display:flex;gap:3px;margin-bottom:1rem">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p style="font-size:.88rem;color:var(--muted);line-height:1.75;font-weight:300;margin-bottom:1.5rem">
+          Готовлю на семью из 5 человек — раньше тяжело было считать пропорции. Написал "плов на 5 человек" — бот выдал точные граммовки. Нашёл акцию на баранину в Магните, сэкономил 400 рублей!
+        </p>
+        <div style="display:flex;align-items:center;gap:.8rem;padding-top:1.2rem;border-top:1px solid var(--border)">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1A0E06,#3A2010);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0">ДВ</div>
+          <div>
+            <div style="font-weight:600;font-size:.88rem;color:var(--ink)">Дмитрий В.</div>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:1px">Казань · семья 5 человек</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Общий рейтинг -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:2rem;margin-top:3rem;padding-top:2.5rem;border-top:1px solid var(--border)">
+      <div style="text-align:center">
+        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:var(--rust)">4.9</div>
+        <div style="display:flex;gap:3px;justify-content:center;margin:.3rem 0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#C4920A"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase">средний рейтинг</div>
+      </div>
+      <div style="width:1px;height:60px;background:var(--border)"></div>
+      <div style="text-align:center">
+        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:var(--rust)">97%</div>
+        <div style="font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:.5rem">рекомендуют друзьям</div>
+      </div>
+      <div style="width:1px;height:60px;background:var(--border)"></div>
+      <div style="text-align:center">
+        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:var(--rust)">~430₽</div>
+        <div style="font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:.5rem">средняя экономия/нед.</div>
+      </div>
+    </div>
+
   </div>
 </section>
 

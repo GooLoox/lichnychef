@@ -22,7 +22,7 @@ MAIN_KEYBOARD = ReplyKeyboardMarkup(
         [KeyboardButton("💰 Замены для экономии"), KeyboardButton("🏠 Что есть дома")],
         [KeyboardButton("🗑️ Очистить список"), KeyboardButton("❓ Помощь")],
         [KeyboardButton("📖 Все рецепты"), KeyboardButton("🥕 Что приготовить?")],
-        [KeyboardButton("📋 История покупок")]
+        [KeyboardButton("📋 История покупок"), KeyboardButton("👤 Мой профиль")]
     ],
     resize_keyboard=True
 )
@@ -185,6 +185,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif text == "💰 Замены для экономии":
         await get_substitutions(update, context)
         return
+    elif text == "👤 Мой профиль":
+        await show_profile(update, context)
+        return
     elif text == "📋 История покупок":
         await show_history(update, context)
         return
@@ -299,6 +302,69 @@ async def status_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 
+
+# ─── Профиль пользователя ─────────────────────────────────────
+async def show_profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    tg_user = update.effective_user
+    user = storage.get_user(user_id)
+
+    from datetime import date
+    is_pro = user.get("is_pro", False)
+    _, remaining = storage.check_limit(user_id)
+    used_today = user.get("requests_today", 0)
+    history = storage.get_shopping_history(user_id)
+    at_home = user.get("at_home", [])
+
+    # Считаем общую статистику
+    total_lists = len(history)
+
+    plan_str = "🚀 Pro — безлимит" if is_pro else f"🆓 Бесплатный — {remaining}/5 осталось"
+
+    msg = (
+        f"👤 Профиль\n"
+        f"{'─' * 28}\n\n"
+        f"Имя: {tg_user.first_name}\n"
+        f"ID: {user_id}\n\n"
+        f"📊 Статистика:\n"
+        f"• Запросов сегодня: {used_today}\n"
+        f"• Списков составлено: {total_lists}\n"
+        f"• Продуктов дома: {len(at_home)}\n\n"
+        f"💳 Тариф: {plan_str}\n\n"
+    )
+
+    if not is_pro:
+        msg += "👉 /pro — перейти на Pro за 299₽/мес\n\n"
+
+    if at_home:
+        msg += f"🏠 Дома есть: {', '.join(at_home[:5])}"
+        if len(at_home) > 5:
+            msg += f" и ещё {len(at_home)-5}"
+        msg += "\n"
+
+    if history:
+        msg += f"\n📋 Последний список:\n"
+        last = history[0]
+        msg += f"{last['date']} — {last['recipe']}"
+
+    from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+    kb = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("📋 История", callback_data="profile_history"),
+            InlineKeyboardButton("🏠 Что дома", callback_data="profile_home"),
+        ],
+        [
+            InlineKeyboardButton("🗑 Очистить историю", callback_data="profile_clear_history"),
+        ],
+        [
+            InlineKeyboardButton("🚀 Upgrade до Pro", url="https://t.me/YOUR_ADMIN"),
+        ] if not is_pro else [
+            InlineKeyboardButton("✅ Pro активен", callback_data="profile_pro"),
+        ]
+    ])
+
+    await update.message.reply_text(msg, reply_markup=kb)
+
 # ─── История покупок ──────────────────────────────────────────
 async def show_history(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -339,6 +405,41 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
     user_id = query.from_user.id
     data = query.data
+
+    # Профиль коллбэки
+    if data == "profile_history":
+        await query.edit_message_reply_markup(reply_markup=None)
+        history = storage.get_shopping_history(user_id)
+        if not history:
+            await context.bot.send_message(chat_id=query.message.chat_id, text="История пуста.", reply_markup=MAIN_KEYBOARD)
+        else:
+            msg = "📋 История покупок:\n\n"
+            for i, e in enumerate(history, 1):
+                msg += f"{i}. {e['date']} — {e['recipe']}\n"
+            await context.bot.send_message(chat_id=query.message.chat_id, text=msg, reply_markup=MAIN_KEYBOARD)
+        return
+
+    if data == "profile_home":
+        await query.edit_message_reply_markup(reply_markup=None)
+        user = storage.get_user(user_id)
+        at_home = user.get("at_home", [])
+        if at_home:
+            msg = "🏠 Дома есть:\n" + ", ".join(at_home)
+        else:
+            msg = "Список пуст. Нажми кнопку 🏠 Что есть дома чтобы добавить."
+        await context.bot.send_message(chat_id=query.message.chat_id, text=msg, reply_markup=MAIN_KEYBOARD)
+        return
+
+    if data == "profile_clear_history":
+        storage.clear_shopping_history(user_id)
+        await query.answer("История очищена!")
+        await query.edit_message_reply_markup(reply_markup=None)
+        await context.bot.send_message(chat_id=query.message.chat_id, text="🗑 История покупок очищена.", reply_markup=MAIN_KEYBOARD)
+        return
+
+    if data == "profile_pro":
+        await query.answer("У тебя уже активен Pro!")
+        return
 
     quick_messages = {
         "quick_borsh": "борщ на 4 человека",
@@ -410,6 +511,7 @@ def main():
     app.add_handler(CommandHandler("help", help_cmd))
     app.add_handler(CommandHandler("pro", pro_info))
     app.add_handler(CommandHandler("history", show_history))
+    app.add_handler(CommandHandler("profile", show_profile))
     app.add_handler(CommandHandler("status", status_cmd))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     app.add_handler(CallbackQueryHandler(handle_callback))
